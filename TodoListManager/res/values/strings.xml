@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Todolist</string>
+    <string name="action_settings">Settings</string>
+    <string name="newItem">Enter a new item to be added</string>
+
+    <string-array name="toDoItems">
+        <item>aa</item>
+    </string-array>
+    <string name="delMen">delete</string>
+    
+    <string name="addMen">Add</string>
+
+</resources>
