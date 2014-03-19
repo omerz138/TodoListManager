@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
- 
     <item
         android:id="@+id/menuItemDelete"
-        android:title="@string/delMen"
-        android:showAsAction="withText">
-         
+        android:showAsAction="withText"
+        android:title="@string/delMen">
     </item>
-    
-  
+
+    <item android:id="@+id/menuItemCall">
+    </item>
 
 </menu>
