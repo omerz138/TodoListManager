@@ -1,8 +1,12 @@
 package il.ac.huji.todolist;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,9 +32,10 @@ public class AddNewTodoItemActivity extends Activity {
 					return;
 				}
 				DatePicker date = (DatePicker) findViewById(R.id.datePicker);
-				String dateStr = Integer.toString(date.getDayOfMonth())+"/" + Integer.toString(date.getMonth()+1)+"/"+ Integer.toString(date.getYear());
+				GregorianCalendar cal = new GregorianCalendar(date.getYear(), date.getMonth(), date.getDayOfMonth());
+
 				res.putExtra("title", task.getText().toString().trim());
-				res.putExtra("dueDate",dateStr);
+				res.putExtra("dueDate",cal.getTimeInMillis());
 				setResult(RESULT_OK, res);
 				finish();
 			}

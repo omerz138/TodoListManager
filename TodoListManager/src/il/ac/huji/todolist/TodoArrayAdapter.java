@@ -42,11 +42,12 @@ public class TodoArrayAdapter extends BaseAdapter {
 		task.setTypeface(tf);
 		date.setTypeface(tf);
 		String taskDate = values.get(position)[1];
-
+       
 		String [] splitTaskDate = taskDate.split("/");
 		Calendar taskGDate = new GregorianCalendar(Integer.parseInt(splitTaskDate[2]),
 				Integer.parseInt(splitTaskDate[1])-1,Integer.parseInt(splitTaskDate[0]));	
 		Calendar today = new GregorianCalendar();
+		
 		task.setText("\n\n\n\n               "+(values.get(position))[0]);
 		date.setText("\n\n\n       "+taskDate);
 
