@@ -3,9 +3,7 @@ package il.ac.huji.todolist;
 
 
 import com.parse.Parse;
-import com.parse.ParseACL;
 import com.parse.ParseUser;
-
 import android.app.Application;
 
 

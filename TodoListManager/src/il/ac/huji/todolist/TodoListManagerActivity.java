@@ -1,16 +1,11 @@
 package il.ac.huji.todolist;
 
 import java.util.ArrayList;
-
 import java.util.List;
-
 import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -18,7 +13,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -41,8 +35,7 @@ public class TodoListManagerActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_todo_list_manager);	 
-		//	ParseAnalytics.trackAppOpened(getIntent());
+		setContentView(R.layout.activity_todo_list_manager);	
 		tasks = new ArrayList<ParseObject>();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("todo");
 		query.findInBackground(new FindCallback<ParseObject>() {
@@ -55,6 +48,7 @@ public class TodoListManagerActivity extends Activity  {
 				} 
 			}
 		});
+
 		helper = new DBHelper(getApplicationContext());
 		SQLiteDatabase readDb = helper.getReadableDatabase();
 		toDoList = (ListView) findViewById(R.id.lstTodoItems);
@@ -71,6 +65,7 @@ public class TodoListManagerActivity extends Activity  {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.layout.cont_menu, menu);
 		super.onCreateContextMenu(menu, v, menuInfo);
+
 		if (v.getId()==R.id.lstTodoItems) {
 
 			SQLiteDatabase readDb = helper.getReadableDatabase();
@@ -78,19 +73,20 @@ public class TodoListManagerActivity extends Activity  {
 			Cursor c = readDb.rawQuery("Select * from "+ DBHelper.table_name+
 					" Where _id="+Integer.toString(info.position+1), null);
 			c.moveToFirst();
-			String curTask = c.getString(1);
+			String curTask = c.getString(1).trim();
 			c.close();
 			String [] curTaskSplt = curTask.split("\\s+");
 			menu.setHeaderTitle(curTask);
 			menu.getItem(1).setVisible(false).setEnabled(false);
 
-			if(curTaskSplt[0].toLowerCase().equals("call") ){
+			if(curTaskSplt[0].toLowerCase().equals("call")  && curTaskSplt.length>1){
 
 				menu.getItem(1).setVisible(true).setEnabled(true).setTitle(curTask);
 			}
 			readDb.close();
 		}
 	}
+
 	public boolean onContextItemSelected(MenuItem item) {
 
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo(); 
@@ -102,25 +98,23 @@ public class TodoListManagerActivity extends Activity  {
 			writeDB = helper.getWritableDatabase();
 			writeDB.delete(DBHelper.table_name, "_id="+Integer.toString(info.position+1), null);
 			ParseQuery<ParseObject> myquery = new ParseQuery<ParseObject>("todo");
-			Log.i("yessssssssssssssss",tasks.get(info.position).getObjectId());
 			myquery.whereEqualTo("objectId",tasks.get(info.position).getObjectId().trim());
 			myquery.findInBackground(new FindCallback<ParseObject>() {
 
 				@Override
 				public void done(List<ParseObject> objects, ParseException e) {
-					// TODO Auto-generated method stub
+
 					try {
 
 						objects.get(0).delete();
 
 					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
+
 						e1.printStackTrace();
 					}
 				}
 			});
 
-			//	tasks.get(info.position).deleteInBackground();
 			tasks.remove(info.position);
 			DBHelper.curMinId--;
 			writeDB.execSQL("update "+DBHelper.table_name+" Set _id=_id-1 where _id>"+Integer.toString(info.position+1));
@@ -165,10 +159,10 @@ public class TodoListManagerActivity extends Activity  {
 
 	public void onActivityResult(int requestCode, int resultCode,
 			Intent data) {
-		
+
 		if(resultCode == RESULT_OK){
 			String title = data.getStringExtra("title");
-			long due = data.getLongExtra("due", 0); 
+			long due = data.getLongExtra("dueDate", 0); 
 			SQLiteDatabase writeDB = helper.getWritableDatabase();
 			ParseObject parse = new ParseObject("todo");
 			ContentValues task = new ContentValues();
@@ -180,7 +174,7 @@ public class TodoListManagerActivity extends Activity  {
 			parse.put("due", due);
 			parse.saveInBackground();
 			tasks.add(parse);
-			
+
 			DBHelper.curMinId++;
 			writeDB.insert(DBHelper.table_name, null ,task);	
 			SQLiteDatabase readDb = helper.getReadableDatabase();
