@@ -55,7 +55,7 @@ public class TodoListManagerActivity extends Activity  {
 		helper = new DBHelper(getApplicationContext());
 		toDoList = (ListView) findViewById(R.id.lstTodoItems);
 		LoadUpadteFromDB load = new LoadUpadteFromDB();
-		load.execute(new Context[]{getApplicationContext()});
+		load.execute();
 		registerForContextMenu(toDoList);
 
 	}
@@ -175,10 +175,10 @@ public class TodoListManagerActivity extends Activity  {
 		}
 	}
 
-	private class LoadUpadteFromDB extends AsyncTask<Context, Void, Cursor>{
+	private class LoadUpadteFromDB extends AsyncTask<Void, Void, Cursor>{
 
 		@Override
-		protected Cursor doInBackground(Context... con) {
+		protected Cursor doInBackground(Void... v) {
 
 			SQLiteDatabase readDb = helper.getReadableDatabase();
 			Cursor c = readDb.rawQuery("SELECT * FROM "+DBHelper.table_name, null);
